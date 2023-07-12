@@ -1,3 +1,9 @@
+<?php
+require_once('config.php');
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,9 +15,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet" />
     <!-- Estilos -->
     <link rel="stylesheet" href="css/styles.css" />
 </head>
@@ -49,19 +53,48 @@
         </div>
     </div>
     <div id="form-container">
+
+        <?php
+        if (isset($_POST['acao']) && $_POST['form'] == 'f_form') {
+
+            $emailRegex = '/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/';
+            $nome = $_POST['name'];
+            $sobrenome = $_POST['lastname'];
+            $email = $_POST['email'];
+            $senha = $_POST['senha'];
+
+            if ($nome == '') {
+                Form::alert('erro', 'O nome está vazio!');
+            } else if ($sobrenome == '') {
+                Form::alert('erro', 'O sobrenome está vazio!');
+            } else if ($email == '' || !preg_match($emailRegex, $email)) {
+                Form::alert('erro', 'Digite um e-mail válido!');
+            } else if ($senha == '') {
+                Form::alert('erro', 'Digite uma senha válida!');
+            } else {
+                Form::cadastrar($nome, $sobrenome, $email, $senha);
+                Form::alert('sucesso', 'Usuário ' . $nome . ' cadastrado com sucesso!');
+            }
+        }
+
+        ?>
+
         <div id="form-inner">
             <h3>Se inscreva</h3>
             <p>
                 Não perca a oportunidade de aprender com especialistas e tirar suas
                 dúvidas
             </p>
-            <form id="register-form">
+            <form id="register-form" method="POST" action="index.php">
+
                 <div id="name-container">
-                    <input type="text" name="name" id="name" placeholder="Nome" />
-                    <input type="text" name="lastname" id="lastname" placeholder="Sobrenome" />
+                    <input type="text" name="name" placeholder="Nome" />
+                    <input type="text" name="lastname" placeholder="Sobrenome" />
                 </div>
-                <input type="email" name="email" id="email" placeholder="Digite seu e-mail" />
-                <input type="submit" value="Cadastrar" />
+                <input type="email" name="email" placeholder="Digite seu e-mail" />
+                <input type="senha" name="senha" placeholder="Digite sua senha" />
+                <input type="submit" name="acao" value="Cadastrar" />
+                <input type="hidden" name="form" value="f_form">
             </form>
             <div id="benefits">
                 <h4>O que você vai aprender</h4>
@@ -74,6 +107,8 @@
             </div>
         </div>
     </div>
+
 </body>
+
 
 </html>
